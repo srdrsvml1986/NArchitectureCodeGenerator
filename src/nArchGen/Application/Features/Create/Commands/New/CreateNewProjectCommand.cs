@@ -37,7 +37,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             yield return response;
             response.OutputMessage = null;
             await downloadStarterProject(request.ProjectName);
-            response.LastOperationMessage = "Starter project has been cloned from 'https://github.com/kodlamaio-projects/nArchitecture'.";
+            response.LastOperationMessage = "Starter project has been cloned from 'https://github.com/srdrsvml1986/NArchitectureTemplate'.";
 
             response.CurrentStatusMessage = "Preparing project...";
             yield return response;

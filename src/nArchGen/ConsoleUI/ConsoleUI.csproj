@@ -15,7 +15,7 @@
 	<Description>Code generator tool for nArchitecture framework.</Description>
 	<PackageProjectUrl></PackageProjectUrl>
 	<PackageIcon>n-architecture-logo.png</PackageIcon>
-	<RepositoryUrl>https://github.com/kodlamaio-projects/nArchitecture.Gen</RepositoryUrl>
+	<RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate.Gen</RepositoryUrl>
 	<PackageTags>nArchitecture, nArchGen, cli, framework, tool, code generation</PackageTags>
 	<Version>2.0</Version>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>

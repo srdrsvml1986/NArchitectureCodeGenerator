@@ -1,26 +1,26 @@
 <p align="center">
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/graphs/contributors"><img src="https://img.shields.io/github/contributors/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/network/members"><img src="https://img.shields.io/github/forks/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/stargazers"><img src="https://img.shields.io/github/stars/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/issues"><img src="https://img.shields.io/github/issues/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/blob/master/LICENSE"><img src="https://img.shields.io/github/license/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/graphs/contributors"><img src="https://img.shields.io/github/contributors/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/network/members"><img src="https://img.shields.io/github/forks/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/stargazers"><img src="https://img.shields.io/github/stars/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/issues"><img src="https://img.shields.io/github/issues/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/blob/master/LICENSE"><img src="https://img.shields.io/github/license/kodlamaio-projects/nArchitecture.Gen.svg?style=for-the-badge"></a>
 </p><br />
 
 <p align="center">
-  <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen"><img src="https://user-images.githubusercontent.com/53148314/194872467-827dc967-acee-4bca-88a2-59ed5695bebf.png" height="125"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen"><img src="https://user-images.githubusercontent.com/53148314/194872467-827dc967-acee-4bca-88a2-59ed5695bebf.png" height="125"></a>
   <h3 align="center">nArchitecture Project Code Generator Tool
 </h3>
   <p align="center">
     <!-- PROJECT_DESCRIPTION -->
     <!-- <br />
-    <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen"><strong>Explore the docs »</strong></a>
     <br /> -->
     <!-- <br />
-    <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen">View Demo</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen">View Demo</a>
     · -->
-    <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/issues">Report Bug</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/issues">Report Bug</a>
     ·
-    <a href="https://github.com/kodlamaio-projects/nArchitecture.Gen/discussions">Request Feature</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/discussions">Request Feature</a>
   </p>
 </p>
 
@@ -63,7 +63,7 @@ To get a local copy up and running follow these simple steps.
 
 ## 🚧 Roadmap
 
-See the [open issues](https://github.com/kodlamaio-projects/nArchitecture.Gen/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/srdrsvml1986/NArchitectureTemplate.Gen/issues) for a list of proposed features (and known issues).
 
 ## 🤝 Contributing
 
@@ -105,7 +105,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-**Project Link:** [https://github.com/kodlamaio-projects/nArchitecture.Gen](https://github.com/kodlamaio-projects/nArchitecture.Gen)
+**Project Link:** [https://github.com/srdrsvml1986/NArchitectureTemplate.Gen](https://github.com/srdrsvml1986/NArchitectureTemplate.Gen)
 
 <!-- ## 🙏 Acknowledgements
 - []() -->
