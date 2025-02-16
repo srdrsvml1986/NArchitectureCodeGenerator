@@ -1,0 +1,8 @@
+namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
+
+public static class {{ entity.name | string.pascalcase | string.plural }}BusinessMessages
+{
+    public const string SectionName = "{{ entity.name | string.pascalcase }}";
+
+    public const string {{ entity.name | string.pascalcase }}NotExists = "{{ entity.name | string.pascalcase }}NotExists";
+}

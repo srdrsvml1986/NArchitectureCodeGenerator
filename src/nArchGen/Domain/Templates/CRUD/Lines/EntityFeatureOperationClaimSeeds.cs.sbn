@@ -1,0 +1,12 @@
+#region {{ entity.name | string.pascalcase | string.plural }} CRUD
+featureOperationClaims.AddRange(
+    [
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Admin },
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Read },
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Write },
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Create },
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Update },
+        new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Delete },
+    ]
+);
+#endregion

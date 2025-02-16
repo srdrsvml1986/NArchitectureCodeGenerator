@@ -1,0 +1,2 @@
+
+public const string {{ query_name | string.pascalcase }} = $"{_section}.{{ query_name | string.pascalcase }}";
