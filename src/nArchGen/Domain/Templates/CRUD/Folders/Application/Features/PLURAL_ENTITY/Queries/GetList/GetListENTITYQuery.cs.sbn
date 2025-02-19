@@ -42,7 +42,23 @@ public class GetList{{ entity.name | string.pascalcase }}Query : IRequest<GetLis
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto> response = _mapper.Map<GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>>({{ entity.name | string.camelcase | string.plural }});
+                        GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto> response;
+            if ({{ entity.name | string.camelcase | string.plural }}.Items == null || !{{ entity.name | string.camelcase | string.plural }}.Items.Any())
+            {
+                response = new GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>
+                {
+                    Items = new List<GetList{{ entity.name | string.pascalcase }}ListItemDto>(),
+                    Index = {{ entity.name | string.camelcase | string.plural }}.Index,
+                    Size = {{ entity.name | string.camelcase | string.plural }}.Size,
+                    Count = {{ entity.name | string.camelcase | string.plural }}.Count,
+                    Pages = {{ entity.name | string.camelcase | string.plural }}.Pages
+                };
+            }
+            else
+            {
+                response = _mapper.Map<GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>>({{ entity.name | string.camelcase | string.plural }});
+            }
+
             return response;
         }
     }

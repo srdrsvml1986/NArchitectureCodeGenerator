@@ -26,6 +26,24 @@ public class MappingProfiles : Profile
         CreateMap<{{ entity.name | string.pascalcase }}, GetById{{ entity.name | string.pascalcase }}Response>();
 
         CreateMap<{{ entity.name | string.pascalcase }}, GetList{{ entity.name | string.pascalcase }}ListItemDto>();
-        CreateMap<IPaginate<{{ entity.name | string.pascalcase }}>, GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>>();
+        CreateMap<IPaginate<{{ entity.name | string.pascalcase }}>, GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>>().ConvertUsing(new PaginateToGetListResponseConverter<{{ entity.name | string.pascalcase }}, GetList{{ entity.name | string.pascalcase }}ListItemDto>());
+    }
+}
+public class PaginateToGetListResponseConverter<TSource, TDestination>
+    : ITypeConverter<IPaginate<TSource>, GetListResponse<TDestination>>
+{
+    public GetListResponse<TDestination> Convert(
+        IPaginate<TSource> source,
+        GetListResponse<TDestination> destination,
+        ResolutionContext context)
+    {
+        return new GetListResponse<TDestination>
+        {
+            Items = context.Mapper.Map<List<TDestination>>(source.Items ?? new List<TSource>()),
+            Index = source.Index,
+            Size = source.Size,
+            Count = source.Count,
+            Pages = source.Pages
+        };
     }
 }
