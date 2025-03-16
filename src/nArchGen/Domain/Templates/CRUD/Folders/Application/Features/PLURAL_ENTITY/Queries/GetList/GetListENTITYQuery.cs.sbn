@@ -1,5 +1,5 @@
 ﻿{{ if is_secured_operation_used }}using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
-{{ end }}using Application.Services.Repositories;
+{{ end }}using Application.Services.{{ entity.name | string.pascalcase | string.plural }};
 using AutoMapper;
 using Domain.Entities;{{ if is_secured_operation_used }}
 using NArchitecture.Core.Application.Pipelines.Authorization;{{ end }}{{ if is_caching_used }}
@@ -25,18 +25,18 @@ public class GetList{{ entity.name | string.pascalcase }}Query : IRequest<GetLis
 
     public class GetList{{ entity.name | string.pascalcase }}QueryHandler : IRequestHandler<GetList{{ entity.name | string.pascalcase }}Query, GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>>
     {
-        private readonly I{{ entity.name | string.pascalcase }}Repository _{{ entity.name | string.camelcase }}Repository;
+        private readonly I{{ entity.name | string.pascalcase }}Service _{{ entity.name | string.camelcase }}Service;
         private readonly IMapper _mapper;
 
-        public GetList{{ entity.name | string.pascalcase }}QueryHandler(I{{ entity.name | string.pascalcase }}Repository {{ entity.name | string.camelcase }}Repository, IMapper mapper)
+        public GetList{{ entity.name | string.pascalcase }}QueryHandler(I{{ entity.name | string.pascalcase }}Service {{ entity.name | string.camelcase }}Service, IMapper mapper)
         {
-            _{{ entity.name | string.camelcase }}Repository = {{ entity.name | string.camelcase }}Repository;
+            _{{ entity.name | string.camelcase }}Service = {{ entity.name | string.camelcase }}Service;
             _mapper = mapper;
         }
 
         public async Task<GetListResponse<GetList{{ entity.name | string.pascalcase }}ListItemDto>> Handle(GetList{{ entity.name | string.pascalcase }}Query request, CancellationToken cancellationToken)
         {
-            IPaginate<{{ entity.name | string.pascalcase }}> {{ entity.name | string.camelcase | string.plural }} = await _{{ entity.name | string.camelcase }}Repository.GetListAsync(
+            IPaginate<{{ entity.name | string.pascalcase }}> {{ entity.name | string.camelcase | string.plural }} = await _{{ entity.name | string.camelcase }}Service.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize, 
                 cancellationToken: cancellationToken

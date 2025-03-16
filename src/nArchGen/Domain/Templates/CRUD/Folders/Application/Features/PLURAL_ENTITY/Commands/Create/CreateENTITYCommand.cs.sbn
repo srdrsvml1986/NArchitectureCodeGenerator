@@ -1,6 +1,6 @@
 ﻿{{ if is_secured_operation_used }}using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
 {{ end }}using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Rules;
-using Application.Services.Repositories;
+using Application.Services.{{ entity.name | string.pascalcase | string.plural }};
 using AutoMapper;
 using Domain.Entities;{{ if is_secured_operation_used }}
 using NArchitecture.Core.Application.Pipelines.Authorization;{{ end }}{{ if is_caching_used }}
@@ -26,14 +26,14 @@ public class Create{{ entity.name | string.pascalcase }}Command : IRequest<Creat
     public class Create{{ entity.name | string.pascalcase }}CommandHandler : IRequestHandler<Create{{ entity.name | string.pascalcase }}Command, Created{{ entity.name | string.pascalcase }}Response>
     {
         private readonly IMapper _mapper;
-        private readonly I{{ entity.name | string.pascalcase }}Repository _{{ entity.name | string.camelcase }}Repository;
+        private readonly I{{ entity.name | string.pascalcase }}Service _{{ entity.name | string.camelcase }}Service;
         private readonly {{ entity.name | string.pascalcase }}BusinessRules _{{ entity.name | string.camelcase }}BusinessRules;
 
-        public Create{{ entity.name | string.pascalcase }}CommandHandler(IMapper mapper, I{{ entity.name | string.pascalcase }}Repository {{ entity.name | string.camelcase }}Repository,
+        public Create{{ entity.name | string.pascalcase }}CommandHandler(IMapper mapper, I{{ entity.name | string.pascalcase }}Service {{ entity.name | string.camelcase }}Service,
                                          {{ entity.name | string.pascalcase }}BusinessRules {{ entity.name | string.camelcase }}BusinessRules)
         {
             _mapper = mapper;
-            _{{ entity.name | string.camelcase }}Repository = {{ entity.name | string.camelcase }}Repository;
+            _{{ entity.name | string.camelcase }}Service = {{ entity.name | string.camelcase }}Service;
             _{{ entity.name | string.camelcase }}BusinessRules = {{ entity.name | string.camelcase }}BusinessRules;
         }
 
@@ -41,7 +41,7 @@ public class Create{{ entity.name | string.pascalcase }}Command : IRequest<Creat
         {
             {{ entity.name | string.pascalcase }} {{ entity.name | string.camelcase }} = _mapper.Map<{{ entity.name | string.pascalcase }}>(request);
 
-            await _{{ entity.name | string.camelcase }}Repository.AddAsync({{ entity.name | string.camelcase }});
+            await _{{ entity.name | string.camelcase }}Service.AddAsync({{ entity.name | string.camelcase }});
 
             Created{{ entity.name | string.pascalcase }}Response response = _mapper.Map<Created{{ entity.name | string.pascalcase }}Response>({{ entity.name | string.camelcase }});
             return response;
