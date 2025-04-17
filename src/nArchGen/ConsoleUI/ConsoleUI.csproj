@@ -9,10 +9,10 @@
 	<ToolCommandName>nar</ToolCommandName>
 	<PackageOutputPath>./nupkg</PackageOutputPath>
 	<PackageId>NArchitecture.Gen</PackageId>
-	<Title>nArchitecture Gen</Title>
-	<Company>Kodlama.io</Company>
-	<Authors>Kodlama.io, Contributors</Authors>
-	<Description>Code generator tool for nArchitecture framework.</Description>
+	<Title>Kod üretme aracı</Title>
+	<Company>Serdarsevimli.tr</Company>
+	<Authors>Serdarsevimli.tr</Authors>
+	<Description>Kod üretme aracı, net core web api NET 9</Description>
 	<PackageProjectUrl></PackageProjectUrl>
 	<PackageIcon>n-architecture-logo.png</PackageIcon>
 	<RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate.Gen</RepositoryUrl>
