@@ -1,2 +1,2 @@
 
-featureSecurityClaims.Add(new() { Id = ++lastId, Name = {{ feature_name }}OperationClaims.{{ query_name | string.pascalcase }} });
+featureOperationClaims.Add(new() { Id = ++lastId, Name = {{ feature_name }}OperationClaims.{{ query_name | string.pascalcase }} });

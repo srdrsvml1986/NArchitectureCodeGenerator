@@ -1,5 +1,5 @@
 #region {{ entity.name | string.pascalcase | string.plural }} CRUD
-featureSecurityClaims.AddRange(
+featureOperationClaims.AddRange(
     [
         new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Admin },
         new() { Id = ++lastId, Name = {{ entity.name | string.pascalcase | string.plural }}OperationClaims.Read },

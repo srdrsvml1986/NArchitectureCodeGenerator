@@ -53,7 +53,7 @@ public class GenerateQueryCommand : IStreamRequest<GeneratedQueryResponse>
             response.CurrentStatusMessage = "Generating Application layer codes...";
             yield return response;
             newFilePaths.AddRange(await generateApplicationCodes(request.ProjectPath, request.QueryTemplateData));
-            updatedFilePaths.AddRange(await injectSecurityClaims(request.ProjectPath, request.FeatureName, request.QueryTemplateData));
+            updatedFilePaths.AddRange(await injectOperationClaims(request.ProjectPath, request.FeatureName, request.QueryTemplateData));
             response.LastOperationMessage = "Application layer codes have been generated.";
 
             response.CurrentStatusMessage = "Adding endpoint to WebAPI...";
@@ -82,63 +82,63 @@ public class GenerateQueryCommand : IStreamRequest<GeneratedQueryResponse>
             );
         }
 
-        private async Task<ICollection<string>> injectSecurityClaims(
+        private async Task<ICollection<string>> injectOperationClaims(
             string projectPath,
             string featureName,
             QueryTemplateData QueryTemplateData
         )
         {
-            string featureSecurityClaimFilePath = PlatformHelper.SecuredPathJoin(
+            string featureOperationClaimFilePath = PlatformHelper.SecuredPathJoin(
                 projectPath,
                 "Application",
                 "Features",
                 featureName,
                 "Constants",
-                $"{featureName}SecurityClaims.cs"
+                $"{featureName}OperationClaims.cs"
             );
 
-            string[] querySecurityClaimPropertyTemplateCodeLines = await File.ReadAllLinesAsync(
+            string[] queryOperationClaimPropertyTemplateCodeLines = await File.ReadAllLinesAsync(
                 PlatformHelper.SecuredPathJoin(
                     DirectoryHelper.AssemblyDirectory,
                     Templates.Paths.Query,
                     "Lines",
-                    "QuerySecurityClaimProperty.cs.sbn"
+                    "QueryOperationClaimProperty.cs.sbn"
                 )
             );
-            string[] querySecurityClaimPropertyCodeLines = await Task.WhenAll(
-                querySecurityClaimPropertyTemplateCodeLines.Select(async line =>
+            string[] queryOperationClaimPropertyCodeLines = await Task.WhenAll(
+                queryOperationClaimPropertyTemplateCodeLines.Select(async line =>
                     await _templateEngine.RenderAsync(line, QueryTemplateData)
                 )
             );
-            await CSharpCodeInjector.AddCodeLinesAsPropertyAsync(featureSecurityClaimFilePath, querySecurityClaimPropertyCodeLines);
+            await CSharpCodeInjector.AddCodeLinesAsPropertyAsync(featureOperationClaimFilePath, queryOperationClaimPropertyCodeLines);
 
-            string securityClaimsEntityConfigurationFilePath = PlatformHelper.SecuredPathJoin(
+            string operationClaimsEntityConfigurationFilePath = PlatformHelper.SecuredPathJoin(
                 projectPath,
                 "Persistence",
                 "EntityConfigurations",
-                "SecurityClaimConfiguration.cs"
+                "OperationClaimConfiguration.cs"
             );
 
-            if (!File.Exists(securityClaimsEntityConfigurationFilePath))
-                return new[] { featureSecurityClaimFilePath };
+            if (!File.Exists(operationClaimsEntityConfigurationFilePath))
+                return new[] { featureOperationClaimFilePath };
 
-            string[] querySecurityClaimSeedTemplateCodeLines = await File.ReadAllLinesAsync(
+            string[] queryOperationClaimSeedTemplateCodeLines = await File.ReadAllLinesAsync(
                 PlatformHelper.SecuredPathJoin(
                     DirectoryHelper.AssemblyDirectory,
                     Templates.Paths.Query,
                     "Lines",
-                    "QuerySecurityClaimSeed.cs.sbn"
+                    "QueryOperationClaimSeed.cs.sbn"
                 )
             );
-            string[] querySecurityClaimSeedCodeLines = await Task.WhenAll(
-                querySecurityClaimSeedTemplateCodeLines.Select(async line => await _templateEngine.RenderAsync(line, QueryTemplateData))
+            string[] queryOperationClaimSeedCodeLines = await Task.WhenAll(
+                queryOperationClaimSeedTemplateCodeLines.Select(async line => await _templateEngine.RenderAsync(line, QueryTemplateData))
             );
             await CSharpCodeInjector.AddCodeLinesToMethodAsync(
-                securityClaimsEntityConfigurationFilePath,
-                "getFeatureSecurityClaims",
-                querySecurityClaimSeedCodeLines
+                operationClaimsEntityConfigurationFilePath,
+                "getFeatureOperationClaims",
+                queryOperationClaimSeedCodeLines
             );
-            return new[] { featureSecurityClaimFilePath, securityClaimsEntityConfigurationFilePath };
+            return new[] { featureOperationClaimFilePath, operationClaimsEntityConfigurationFilePath };
         }
 
         private async Task<ICollection<string>> generateFolderCodes(

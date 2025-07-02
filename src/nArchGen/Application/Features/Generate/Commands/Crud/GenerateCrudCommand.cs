@@ -55,7 +55,7 @@ public class GenerateCrudCommand : IStreamRequest<GeneratedCrudResponse>
 
             response.CurrentStatusMessage = "Adding operation claims as seed data...";
             yield return response;
-            updatedFilePaths.Add(await injectSecurityClaims(request.ProjectPath, request.CrudTemplateData));
+            updatedFilePaths.Add(await injectOperationClaims(request.ProjectPath, request.CrudTemplateData));
             response.LastOperationMessage = "Operation claims have been added.";
 
             response.CurrentStatusMessage = "Adding service registrations...";
@@ -74,24 +74,24 @@ public class GenerateCrudCommand : IStreamRequest<GeneratedCrudResponse>
             yield return response;
         }
 
-        private async Task<string> injectSecurityClaims(string projectPath, CrudTemplateData crudTemplateData)
+        private async Task<string> injectOperationClaims(string projectPath, CrudTemplateData crudTemplateData)
         {
-            string securityClaimConfigurationFilePath = PlatformHelper.SecuredPathJoin(
+            string operationClaimConfigurationFilePath = PlatformHelper.SecuredPathJoin(
                 projectPath,
                 "Persistence",
                 "EntityConfigurations",
-                "SecurityClaimConfiguration.cs"
+                "OperationClaimConfiguration.cs"
             );
 
-            if (!File.Exists(securityClaimConfigurationFilePath))
-                return $"Not Found: {securityClaimConfigurationFilePath}";
+            if (!File.Exists(operationClaimConfigurationFilePath))
+                return $"Not Found: {operationClaimConfigurationFilePath}";
 
             string[] seedTemplateCodeLines = await File.ReadAllLinesAsync(
                 PlatformHelper.SecuredPathJoin(
                     DirectoryHelper.AssemblyDirectory,
                     Templates.Paths.Crud,
                     "Lines",
-                    "EntityFeatureSecurityClaimSeeds.cs.sbn"
+                    "EntityFeatureOperationClaimSeeds.cs.sbn"
                 )
             );
 
@@ -104,27 +104,27 @@ public class GenerateCrudCommand : IStreamRequest<GeneratedCrudResponse>
             seedCodeLines.Add(string.Empty);
 
             await CSharpCodeInjector.AddCodeLinesToMethodAsync(
-                securityClaimConfigurationFilePath,
-                methodName: "getFeatureSecurityClaims",
+                operationClaimConfigurationFilePath,
+                methodName: "getFeatureOperationClaims",
                 codeLines: seedCodeLines.ToArray()
             );
 
-            string featureSecurityClaimUsingTemplatePath = PlatformHelper.SecuredPathJoin(
+            string featureOperationClaimUsingTemplatePath = PlatformHelper.SecuredPathJoin(
                 DirectoryHelper.AssemblyDirectory,
                 Templates.Paths.Crud,
                 "Lines",
-                "EntityFeatureSecurityClaimsNameSpaceUsing.cs.sbn"
+                "EntityFeatureOperationClaimsNameSpaceUsing.cs.sbn"
             );
-            string featureSecurityClaimUsingTemplate = await File.ReadAllTextAsync(featureSecurityClaimUsingTemplatePath);
-            string featureSecurityClaimUsingRendered = await _templateEngine.RenderAsync(
-                featureSecurityClaimUsingTemplate,
+            string featureOperationClaimUsingTemplate = await File.ReadAllTextAsync(featureOperationClaimUsingTemplatePath);
+            string featureOperationClaimUsingRendered = await _templateEngine.RenderAsync(
+                featureOperationClaimUsingTemplate,
                 crudTemplateData
             );
             await CSharpCodeInjector.AddUsingToFile(
-                securityClaimConfigurationFilePath,
-                usingLines: featureSecurityClaimUsingRendered.Split(Environment.NewLine)
+                operationClaimConfigurationFilePath,
+                usingLines: featureOperationClaimUsingRendered.Split(Environment.NewLine)
             );
-            return securityClaimConfigurationFilePath;
+            return operationClaimConfigurationFilePath;
         }
 
         private async Task<string> injectEntityToContext(string projectPath, CrudTemplateData crudTemplateData)
