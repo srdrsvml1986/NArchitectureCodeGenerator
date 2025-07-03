@@ -257,9 +257,9 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
                             "using Application.Services.AuthenticatorService;",
                             "using Application.Services.AuthService;",
                             "using Application.Services.UsersService;",
-                            "services.AddScoped<IAuthService, AuthManager>();",
-                            "services.AddScoped<IAuthenticatorService, AuthenticatorManager>();",
-                            "services.AddScoped<IUserService, UserManager>();",
+                            "services.AddScoped<IAuthService, AuthService>();",
+                            "services.AddScoped<IAuthenticatorService, AuthenticatorService>();",
+                            "services.AddScoped<IUserService, UserService>();",
                             "using NArchitecture.Core.Security.DependencyInjection;",
                             "services.AddSecurityServices<Guid, int>();",
                         }
