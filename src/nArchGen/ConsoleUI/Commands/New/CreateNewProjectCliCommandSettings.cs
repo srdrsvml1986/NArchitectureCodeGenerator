@@ -30,7 +30,7 @@ public partial class CreateNewProjectCliCommand
                 return;
             IsThereSecurityMechanism = AnsiConsole.Confirm(
                 prompt: "Do you want to add security mechanism to your project?",
-                defaultValue: false
+                defaultValue: true
             );
         }
     }

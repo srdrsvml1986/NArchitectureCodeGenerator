@@ -66,7 +66,8 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
         private async Task downloadStarterProject(string projectName)
         {
             // Download zip on url
-            string releaseUrl = "https://github.com/srdrsvml1986/NArchitectureTemplate/archive/refs/heads/master.zip";
+            string releaseUrl = "https://github.com/srdrsvml1986/NArchitectureTemplate.git";
+
             using HttpClient client = new();
             using HttpResponseMessage response = await client.GetAsync(releaseUrl);
             response.EnsureSuccessStatusCode();
@@ -88,12 +89,12 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             Directory.SetCurrentDirectory($"./{projectName}");
 
             await replaceFileContentWithProjectName(
-                path: $"{Environment.CurrentDirectory}/NArchitecture.sln",
+                path: $"{Environment.CurrentDirectory}/NArchitectureTemplate.sln",
                 search: "NArchitecture",
                 projectName: projectName.ToPascalCase()
             );
             await replaceFileContentWithProjectName(
-                path: $"{Environment.CurrentDirectory}/NArchitecture.sln.DotSettings",
+                path: $"{Environment.CurrentDirectory}/NArchitectureTemplate.sln.DotSettings",
                 search: "NArchitecture",
                 projectName: projectName.ToPascalCase()
             );
@@ -260,7 +261,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
                             "services.AddScoped<IAuthService, AuthService>();",
                             "services.AddScoped<IAuthenticatorService, AuthenticatorService>();",
                             "services.AddScoped<IUserService, UserService>();",
-                            "using NArchitecture.Core.Security.DependencyInjection;",
+                            "using NArchitectureTemplate.Core.Security.DependencyInjection;",
                             "services.AddSecurityServices<Guid, int>();",
                         }
                     ).Any(line.Contains)
@@ -268,14 +269,14 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             await FileHelper.RemoveLinesAsync(
                 filePath: $"{projectSourcePath}/Application/Application.csproj",
                 predicate: line =>
-                    (new[] { "<PackageReference Include=\"NArchitecture.Core.Security.DependencyInjection\" Version=\"1.0.0\" />", }).Any(
+                    (new[] { "<PackageReference Include=\"NArchitectureTemplate.Core.Security.DependencyInjection\" Version=\"1.0.0\" />", }).Any(
                         line.Contains
                     )
             );
             await FileHelper.RemoveLinesAsync(
                 filePath: $"{projectSourcePath}/Domain/Domain.csproj",
                 predicate: line =>
-                    (new[] { "<PackageReference Include=\"NArchitecture.Core.Security\" Version=\"1.1.1\" />" }).Any(line.Contains)
+                    (new[] { "<PackageReference Include=\"NArchitectureTemplate.Core.Security\" Version=\"1.1.1\" />" }).Any(line.Contains)
             );
             await FileHelper.RemoveLinesAsync(
                 filePath: $"{projectSourcePath}/Persistence/Contexts/BaseDbContext.cs",
@@ -345,7 +346,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             );
             await FileHelper.RemoveContentAsync(
                 filePath: $"{projectSourcePath}/WebAPI/WebAPI.csproj",
-                contents: new[] { "<PackageReference Include=\"NArchitecture.Core.Security.WebApi.Swagger\" Version=\"1.0.0\" />;", }
+                contents: new[] { "<PackageReference Include=\"NArchitectureTemplate.Core.Security.WebApi.Swagger\" Version=\"1.0.0\" />;", }
             );
         }
 

@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 
 namespace Application.Features.{{ feature_name }}.Queries.{{ query_name | string.pascalcase }};
 

@@ -3,7 +3,7 @@
 using Application.Services.{{ entity.name | string.pascalcase | string.plural }};
 using AutoMapper;
 using Domain.Entities;{{ if is_secured_operation_used }}
-using NArchitecture.Core.Application.Pipelines.Authorization;{{ end }}
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;{{ end }}
 using MediatR;{{ if is_secured_operation_used }}
 using static Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants.{{ entity.name | string.pascalcase | string.plural }}OperationClaims;{{ end }}
 

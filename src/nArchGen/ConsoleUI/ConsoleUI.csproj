@@ -8,7 +8,7 @@
 	<PackAsTool>true</PackAsTool>
 	<ToolCommandName>nar</ToolCommandName>
 	<PackageOutputPath>./nupkg</PackageOutputPath>
-	<PackageId>NArchitecture.Gen</PackageId>
+	<PackageId>NArchitectureTemplate.Gen</PackageId>
 	<Title>Kod üretme aracı</Title>
 	<Company>Serdarsevimli.tr</Company>
 	<Authors>Serdarsevimli.tr</Authors>

@@ -1,4 +1,4 @@
-﻿using NArchitecture.Core.Application.Responses;
+﻿using NArchitectureTemplate.Core.Application.Responses;
 
 namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Commands.Delete;
 
