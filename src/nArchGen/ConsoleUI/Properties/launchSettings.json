@@ -2,7 +2,9 @@
   "profiles": {
     "ConsoleUI": {
       "commandName": "Project",
-      "commandLineArgs": "generate crud"
+      "commandLineArgs": "generate crud",
+      "workingDirectory": "C:\\Users\\xxx\\Desktop\\projeler\\",
+      "nativeDebugging": true
     }
   }
 }

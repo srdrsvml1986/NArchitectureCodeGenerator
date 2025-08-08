@@ -58,6 +58,6 @@ app.Configure(config =>
     #endregion
 });
 
-AnsiConsole.Write(new FigletText("nArchitecture").LeftJustified().Color(Color.Blue));
+AnsiConsole.Write(new FigletText("NArchitectureTemplate").LeftJustified().Color(Color.Blue));
 
 return app.Run(args);

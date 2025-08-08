@@ -66,7 +66,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
         private async Task downloadStarterProject(string projectName)
         {
             // Download zip on url
-            string releaseUrl = "https://github.com/srdrsvml1986/NArchitectureTemplate.git";
+            string releaseUrl = "https://github.com/srdrsvml1986/NArchitectureTemplate/archive/refs/heads/master.zip";
 
             using HttpClient client = new();
             using HttpResponseMessage response = await client.GetAsync(releaseUrl);
@@ -90,12 +90,12 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
 
             await replaceFileContentWithProjectName(
                 path: $"{Environment.CurrentDirectory}/NArchitectureTemplate.sln",
-                search: "NArchitecture",
+                search: "NArchitectureTemplate",
                 projectName: projectName.ToPascalCase()
             );
             await replaceFileContentWithProjectName(
                 path: $"{Environment.CurrentDirectory}/NArchitectureTemplate.sln.DotSettings",
-                search: "NArchitecture",
+                search: "NArchitectureTemplate",
                 projectName: projectName.ToPascalCase()
             );
 
@@ -147,7 +147,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             );
             await replaceFileContentWithProjectName(
                 path: $"{Environment.CurrentDirectory}/.azure/azure-pipelines.development.yml",
-                search: "NArchitecture",
+                search: "NArchitectureTemplate",
                 projectName: projectName.ToPascalCase()
             );
             await replaceFileContentWithProjectName(
@@ -157,7 +157,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             );
             await replaceFileContentWithProjectName(
                 path: $"{Environment.CurrentDirectory}/.azure/azure-pipelines.staging.yml",
-                search: "NArchitecture",
+                search: "NArchitectureTemplate",
                 projectName: projectName.ToPascalCase()
             );
             await replaceFileContentWithProjectName(
@@ -167,7 +167,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             );
             await replaceFileContentWithProjectName(
                 path: $"{Environment.CurrentDirectory}/.azure/azure-pipelines.production.yml",
-                search: "NArchitecture",
+                search: "NArchitectureTemplate",
                 projectName: projectName.ToPascalCase()
             );
 
@@ -355,7 +355,7 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
             Directory.SetCurrentDirectory($"./{projectName}");
             await GitCommandHelper.RunAsync($"init");
             await GitCommandHelper.RunAsync($"branch -m master main");
-            await GitCommandHelper.CommitChangesAsync("chore: initial commit from nArchitecture.Gen");
+            await GitCommandHelper.CommitChangesAsync("chore: initial commit from NArchitectureTemplate.Gen");
             Directory.SetCurrentDirectory("../");
         }
     }

@@ -1,6 +1,6 @@
 # nArchGen CLI
 
-nArchGen CLI, nArchitecture tabanlı .NET projelerini hızlı bir şekilde oluşturmanızı ve yönetmenizi sağlayan bir komut satırı aracıdır.
+nArchGen CLI, NArchitectureTemplate tabanlı .NET projelerini hızlı bir şekilde oluşturmanızı ve yönetmenizi sağlayan bir komut satırı aracıdır.
 
 ## Özellikler
 
