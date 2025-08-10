@@ -54,16 +54,30 @@ public class {{ entity.name | string.pascalcase }}Service : I{{ entity.name | st
         return {{ entity.name | string.camelcase }}List;
     }
 
-    public async Task<{{ entity.name | string.camelcase | string.pascalcase }}> AddAsync({{ entity.name | string.camelcase | string.pascalcase }} {{ entity.name | string.camelcase }})
+    public async Task<{{ entity.name | string.camelcase | string.pascalcase }}> AddAsync({{ entity.name | string.camelcase | string.pascalcase }} {{ entity.name | string.camelcase }}, bool enableTracking = true)
     {
         {{ entity.name | string.camelcase | string.pascalcase }} added{{ entity.name | string.camelcase | string.pascalcase }} = await _{{ entity.name | string.camelcase }}Repository.AddAsync({{ entity.name | string.camelcase }});
 
         return added{{ entity.name | string.camelcase | string.pascalcase }};
     }
 
-    public async Task<{{ entity.name | string.camelcase | string.pascalcase }}> UpdateAsync({{ entity.name | string.camelcase | string.pascalcase }} {{ entity.name | string.camelcase }})
+    public async Task<ICollection<{{ entity.name | string.camelcase | string.pascalcase }}>> AddRangeAsync(ICollection<{{ entity.name | string.camelcase | string.pascalcase }}> {{ entity.name | string.camelcase }}, bool enableTracking = true)
+    {
+        ICollection<{{ entity.name | string.camelcase | string.pascalcase }}> added{{ entity.name | string.camelcase | string.pascalcase }} = await _{{ entity.name | string.camelcase }}Repository.AddRangeAsync({{ entity.name | string.camelcase }});
+
+        return added{{ entity.name | string.camelcase | string.pascalcase }};
+    }
+
+    public async Task<{{ entity.name | string.camelcase | string.pascalcase }}> UpdateAsync({{ entity.name | string.camelcase | string.pascalcase }} {{ entity.name | string.camelcase }}, bool enableTracking = true)
     {
         {{ entity.name | string.camelcase | string.pascalcase }} updated{{ entity.name | string.camelcase | string.pascalcase }} = await _{{ entity.name | string.camelcase }}Repository.UpdateAsync({{ entity.name | string.camelcase }});
+
+        return updated{{ entity.name | string.camelcase | string.pascalcase }};
+    }
+
+    public async Task<ICollection<{{ entity.name | string.camelcase | string.pascalcase }}>> UpdateRangeAsync(ICollection<{{ entity.name | string.camelcase | string.pascalcase }}> {{ entity.name | string.camelcase }}, bool enableTracking = true)
+    {
+        ICollection<{{ entity.name | string.camelcase | string.pascalcase }}> updated{{ entity.name | string.camelcase | string.pascalcase }} = await _{{ entity.name | string.camelcase }}Repository.UpdateRangeAsync({{ entity.name | string.camelcase }});
 
         return updated{{ entity.name | string.camelcase | string.pascalcase }};
     }

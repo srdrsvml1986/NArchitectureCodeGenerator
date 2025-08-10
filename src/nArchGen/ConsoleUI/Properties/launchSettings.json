@@ -3,7 +3,7 @@
     "ConsoleUI": {
       "commandName": "Project",
       "commandLineArgs": "generate crud",
-      "workingDirectory": "C:\\Users\\xxx\\Desktop\\projeler\\",
+      "workingDirectory": "C:\\Users\\xxx\\source\\repos\\Nar\\nArchitecture-template",
       "nativeDebugging": true
     }
   }
