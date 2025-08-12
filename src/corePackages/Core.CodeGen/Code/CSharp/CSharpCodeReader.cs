@@ -34,15 +34,16 @@ public static class CSharpCodeReader
     public static async Task<ICollection<string>> ReadBaseClassGenericArgumentsAsync(string filePath)
     {
         string fileContent = await System.IO.File.ReadAllTextAsync(filePath);
-        //const string pattern = @"class\s+\w+\s*:?\s*(\w+)\s*<([\w,\s]+)>";
-          const string pattern = @"class\s+\w+\s*:?\s*[\w\.]+\s*<([\w,\s]+)>";
+        // Geliştirilmiş pattern
+        const string pattern = @"class\s+\w+\s*:\s*([\w\.]+\s*<([\w\s,]+)>)";
 
         Match match = Regex.Match(fileContent, pattern);
         if (!match.Success)
             return new List<string>();
-        string[] genericArguments = match.Groups[2].Value.Split(',');
 
-        return genericArguments.Select(genericArgument => genericArgument.Trim()).ToArray();
+        return match.Groups[2].Value.Split(',')
+            .Select(x => x.Trim())
+            .ToList();
     }
 
     public static async Task<ICollection<PropertyInfo>> ReadClassPropertiesAsync(string filePath, string projectPath)

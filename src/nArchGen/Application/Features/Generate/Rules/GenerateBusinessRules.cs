@@ -4,9 +4,6 @@ using Core.CodeGen.File;
 using Core.CrossCuttingConcerns.Exceptions;
 using Core.CrossCuttingConcerns.Helpers;
 using Domain.Constants;
-using System.Threading.Tasks;
-using System.IO;
-using System.Linq;
 
 namespace Application.Features.Generate.Rules;
 
@@ -14,40 +11,27 @@ public class GenerateBusinessRules
 {
     public async Task EntityClassShouldBeInhreitEntityBaseClass(string projectPath, string entityName)
     {
-        string entityFilePath = PlatformHelper.SecuredPathJoin(
-            projectPath, "Domain", "Entities", $"{entityName}.cs"
+        string filePath = Path.Combine(projectPath, "Domain", "Entities", $"{entityName}.cs");
+        string[] fileContent = await File.ReadAllLinesAsync(filePath);
+
+        // Geliştirilmiş kalıtım kontrolü
+        bool isValidInheritance = fileContent.Any(line =>
+            line.Contains(": Entity<") ||                     // Temel Entity kalıtımı
+            line.Contains(": IEntity") ||                     // Arayüz implementasyonu
+            line.Contains("Core.Security.Entities.Log<") ||   // Log özel durumu
+            line.Contains("Core.Security.Entities.ExceptionLog<") ||   // Log özel durumu
+            line.Contains($"class {entityName} : Entity")     // Temel Entity
         );
 
-        string fileContent = await File.ReadAllTextAsync(entityFilePath);
-
-        // Daha esnek regex patternleri
-        var patterns = new[]
+        if (!isValidInheritance)
         {
-            $@"public\s+(partial\s+)?class\s+{entityName}\s*:\s*.*\bEntity\b.*", // Standart Entity
-            $@"public\s+(partial\s+)?class\s+{entityName}\s*:\s*.*\bLog\b.*",    // Log Entity
-            $@"public\s+(partial\s+)?class\s+{entityName}\s*:\s*.*\bExceptionLog\b.*" // ExceptionLog
-        };
-
-        bool isInheritingEntityBase = patterns.Any(pattern =>
-            Regex.IsMatch(fileContent, pattern, RegexOptions.Singleline));
-
-        // Namespace kontrolü (daha esnek)
-        bool hasEntityNamespace =
-            fileContent.Contains("Core.Persistence.Repositories") ||
-            fileContent.Contains("Core.Security.Entities") ||
-            fileContent.Contains("Core.Security.Entities.Logs");
-
-        if (!isInheritingEntityBase || !hasEntityNamespace)
-        {
-            throw new BusinessException(
-                GenerateBusinessMessages.EntityClassShouldBeInheritEntityBaseClass(entityName)
-            );
+            throw new BusinessException(GenerateBusinessMessages.EntityClassShouldBeInheritEntityBaseClass(entityName));
         }
     }
 
     public Task FileShouldNotBeExists(string filePath)
     {
-        if (File.Exists(filePath))
+        if (Directory.Exists(filePath))
             throw new BusinessException(GenerateBusinessMessages.FileAlreadyExists(filePath));
         return Task.CompletedTask;
     }
