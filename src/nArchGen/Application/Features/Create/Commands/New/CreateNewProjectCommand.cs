@@ -65,23 +65,46 @@ public class CreateNewProjectCommand : IStreamRequest<CreatedNewProjectResponse>
 
         private async Task downloadStarterProject(string projectName)
         {
-            // Download zip on url
-            string releaseUrl = "https://github.com/srdrsvml1986/NArchitectureTemplate/archive/refs/heads/master.zip";
-
-            using HttpClient client = new();
-            using HttpResponseMessage response = await client.GetAsync(releaseUrl);
-            response.EnsureSuccessStatusCode();
+            string zipUrl = "https://api.github.com/repos/srdrsvml1986/NArchitectureTemplate/zipball/master";
             string zipPath = $"{Environment.CurrentDirectory}/{projectName}.zip";
-            await using Stream zipStream = await response.Content.ReadAsStreamAsync();
-            await using FileStream fileStream = new(zipPath, FileMode.Create, FileAccess.Write);
-            await zipStream.CopyToAsync(fileStream);
-            fileStream.Close();
-            ZipFile.ExtractToDirectory(zipPath, Environment.CurrentDirectory);
-            File.Delete(zipPath);
-            Directory.Move(
-                sourceDirName: $"{Environment.CurrentDirectory}/NArchitectureTemplate-master",
-                $"{Environment.CurrentDirectory}/{projectName}"
-            );
+
+            // 1. HttpClient + PAT ile indirme
+            try
+            {
+                using HttpClient client = new();
+
+                // GitHub PAT environment variable’dan okunuyor
+                string? token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+                if (string.IsNullOrWhiteSpace(token))
+                    throw new InvalidOperationException("GitHub token bulunamadı! Lütfen GITHUB_TOKEN environment variable tanımlayın.");
+
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("NArchTemplate-Gen");
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
+
+                using HttpResponseMessage response = await client.GetAsync(zipUrl);
+                response.EnsureSuccessStatusCode();
+
+                await using Stream zipStream = await response.Content.ReadAsStreamAsync();
+                await using FileStream fileStream = new(zipPath, FileMode.Create, FileAccess.Write);
+                await zipStream.CopyToAsync(fileStream);
+
+                ZipFile.ExtractToDirectory(zipPath, Environment.CurrentDirectory);
+                File.Delete(zipPath);
+
+                // GitHub API "NArchitectureTemplate-<commitHash>" gibi klasör ismi oluşturur
+                string extractedFolder = Directory.GetDirectories(Environment.CurrentDirectory, "srdrsvml1986-NArchitectureTemplate-*").First();
+                Directory.Move(extractedFolder, $"{Environment.CurrentDirectory}/{projectName}");
+            }
+            catch (Exception ex)
+            {
+                // 2. Eğer HttpClient ile indirme başarısız olursa git clone fallback
+                Console.WriteLine($"Zip indirme başarısız oldu: {ex.Message}. Git clone denenecek...");
+
+                await GitCommandHelper.RunAsync(
+                    $"clone https://github.com/srdrsvml1986/NArchitectureTemplate.git {projectName}"
+                );
+            }
         }
 
         private async Task renameProject(string projectName)
