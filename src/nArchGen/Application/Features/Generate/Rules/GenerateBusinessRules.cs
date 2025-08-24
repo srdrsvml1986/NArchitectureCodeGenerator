@@ -20,6 +20,7 @@ public class GenerateBusinessRules
             line.Contains(": IEntity") ||                     // Arayüz implementasyonu
             line.Contains("Core.Security.Entities.Log<") ||   // Log özel durumu
             line.Contains("Core.Security.Entities.ExceptionLog<") ||   // Log özel durumu
+            line.Contains("Core.Security.Entities.DeviceToken<") ||   // Log özel durumu
             line.Contains($"class {entityName} : Entity")     // Temel Entity
         );
 

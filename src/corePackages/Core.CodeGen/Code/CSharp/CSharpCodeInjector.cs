@@ -84,38 +84,46 @@ public static class CSharpCodeInjector
     {
         string[] fileContent = await System.IO.File.ReadAllLinesAsync(filePath);
         const string propertyStartRegex =
-            @"(public|protected|internal|protected internal|private protected|private)?\s*(?:const|static|required)?\s+(\w+(<.*>)?)\s+(\w+)\s*(?:\{.*\}|=.+;)";
+            @"(public|protected|internal|protected internal|private protected|private)?\s*(?:const|static|required)?\s+([\w\.]+(\s*<[^>]+>)?)\s+(\w+)\s*\{\s*get;\s*set;\s*\}";
 
         int indexToAdd = -1;
+        int scopeDepth = 0;
+
         for (int i = 0; i < fileContent.Length; ++i)
         {
-            Match propertyStart = Regex.Match(input: fileContent[i], propertyStartRegex);
-            if (propertyStart.Success)
+            string line = fileContent[i];
+
+            if (line.Contains("{"))
+                scopeDepth++;
+            if (line.Contains("}"))
+                scopeDepth--;
+
+            Match propertyStart = Regex.Match(line, propertyStartRegex);
+            if (propertyStart.Success && scopeDepth == 1) // sadece class seviyesinde
+            {
                 indexToAdd = i;
+            }
         }
 
         int propertySpaceCountInClass;
         if (indexToAdd == -1)
         {
+            // property bulunamadı → class'ın { açılışını bul
             const string classRegex = @"class\s+(\w+)";
-
             for (int i = 0; i < fileContent.Length; ++i)
             {
-                Match propertyStart = Regex.Match(input: fileContent[i], classRegex);
-                if (propertyStart.Success)
+                Match classStart = Regex.Match(fileContent[i], classRegex);
+                if (classStart.Success)
                     indexToAdd = i;
 
-                if (!Regex.Match(input: fileContent[i], pattern: @"\{").Success)
-                    for (int j = indexToAdd + 1; j < fileContent.Length; ++j)
-                    {
-                        if (!Regex.Match(input: fileContent[j], pattern: @"\{").Success)
-                            continue;
-                        indexToAdd = j;
-                        break;
-                    }
+                if (!Regex.Match(fileContent[i], pattern: @"\{").Success)
+                    continue;
+
+                indexToAdd = i;
+                break;
             }
 
-            propertySpaceCountInClass = fileContent[indexToAdd].TakeWhile(char.IsWhiteSpace).Count() * 2;
+            propertySpaceCountInClass = fileContent[indexToAdd].TakeWhile(char.IsWhiteSpace).Count() + 4;
         }
         else
         {
@@ -130,6 +138,7 @@ public static class CSharpCodeInjector
 
         await System.IO.File.WriteAllLinesAsync(filePath, contents: updatedFileContent.ToArray());
     }
+
 
     public static async Task AddCodeLinesToRegionAsync(string filePath, IEnumerable<string> linesToAdd, string regionName)
     {
