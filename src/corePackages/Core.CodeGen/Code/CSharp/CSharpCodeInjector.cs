@@ -80,63 +80,103 @@ public static class CSharpCodeInjector
         await System.IO.File.WriteAllLinesAsync(filePath, contents: fileContent.ToArray());
     }
 
-    public static async Task AddCodeLinesAsPropertyAsync(string filePath, string[] codeLines)
+    public static async Task AddCodeLinesAsPropertyAsync(
+        string filePath,
+        string[] codeLines,
+        string? className = null // hedef sınıfı kilitlemek için
+    )
     {
-        string[] fileContent = await System.IO.File.ReadAllLinesAsync(filePath);
-        const string propertyStartRegex =
-            @"(public|protected|internal|protected internal|private protected|private)?\s*(?:const|static|required)?\s+([\w\.]+(\s*<[^>]+>)?)\s+(\w+)\s*\{\s*get;\s*set;\s*\}";
+        var file = (await System.IO.File.ReadAllLinesAsync(filePath)).ToList();
 
-        int indexToAdd = -1;
-        int scopeDepth = 0;
+        // 1) Hedef sınıf aralığını bul
+        int classStart = -1, classOpenBrace = -1, classEnd = -1;
 
-        for (int i = 0; i < fileContent.Length; ++i)
+        Regex classStartRegex = className is null
+            ? new Regex(@"\b(class|record)\s+\w[\w\<\>\,\s]*")
+            : new Regex(@$"\b(class|record)\s+{Regex.Escape(className)}\b");
+
+        Regex braceOpen = new(@"\{");
+        Regex braceClose = new(@"\}");
+
+        for (int i = 0; i < file.Count; i++)
         {
-            string line = fileContent[i];
+            if (!classStartRegex.IsMatch(file[i]))
+                continue;
+            classStart = i;
 
-            if (line.Contains("{"))
-                scopeDepth++;
-            if (line.Contains("}"))
-                scopeDepth--;
-
-            Match propertyStart = Regex.Match(line, propertyStartRegex);
-            if (propertyStart.Success && scopeDepth == 1) // sadece class seviyesinde
+            // açılış süslüyü bul
+            classOpenBrace = classStart;
+            if (!braceOpen.IsMatch(file[classOpenBrace]))
             {
-                indexToAdd = i;
+                for (int j = classStart + 1; j < file.Count; j++)
+                {
+                    if (braceOpen.IsMatch(file[j]))
+                    { classOpenBrace = j; break; }
+                }
             }
+
+            // eşleşen kapanışı sayarak bul
+            int depth = 1;
+            for (int j = classOpenBrace + 1; j < file.Count; j++)
+            {
+                if (braceOpen.IsMatch(file[j]))
+                    depth++;
+                if (braceClose.IsMatch(file[j]))
+                    depth--;
+                if (depth == 0)
+                { classEnd = j; break; }
+            }
+            break; // ilk (ya da ismen eşleşen) sınıfı al
         }
 
-        int propertySpaceCountInClass;
-        if (indexToAdd == -1)
+        if (classStart == -1 || classOpenBrace == -1 || classEnd == -1)
+            throw new Exception($"Target class {(className ?? "(first)")} not found in \"{filePath}\".");
+
+        // 2) Hedef sınıf gövdesinde, derinlik 0 seviyesindeki son property’yi bul
+        // Auto-property deseni (get; set;) – sade ve güvenli
+        Regex propertyRegex = new(@"^\s*(public|protected|internal|private|protected\s+internal|private\s+protected)\s+[\w\.\<\>\?\[\],\s]+\s+\w+\s*\{\s*get;\s*set;\s*\}\s*$");
+        Regex nestedClassAtLevel0Regex = new(@"\b(class|record)\s+\w");
+
+        int insertAfter = classOpenBrace; // varsayılan: açılış brace’inin hemen altı
+        int localDepth = 0;
+
+        for (int i = classOpenBrace + 1; i < classEnd; i++)
         {
-            // property bulunamadı → class'ın { açılışını bul
-            const string classRegex = @"class\s+(\w+)";
-            for (int i = 0; i < fileContent.Length; ++i)
-            {
-                Match classStart = Regex.Match(fileContent[i], classRegex);
-                if (classStart.Success)
-                    indexToAdd = i;
+            if (braceOpen.IsMatch(file[i]))
+                localDepth++;
+            if (braceClose.IsMatch(file[i]))
+                localDepth--;
 
-                if (!Regex.Match(fileContent[i], pattern: @"\{").Success)
-                    continue;
-
-                indexToAdd = i;
+            // nested class başlıyorsa ve henüz property bulmadıysak,
+            // nested class’tan önce eklemek adına durumu koru
+            if (localDepth == 0 && nestedClassAtLevel0Regex.IsMatch(file[i]))
                 break;
-            }
 
-            propertySpaceCountInClass = fileContent[indexToAdd].TakeWhile(char.IsWhiteSpace).Count() + 4;
-        }
-        else
-        {
-            propertySpaceCountInClass = fileContent[indexToAdd].TakeWhile(char.IsWhiteSpace).Count();
+            if (localDepth == 0 && propertyRegex.IsMatch(file[i]))
+                insertAfter = i; // sınıf seviyesindeki son property
         }
 
-        List<string> updatedFileContent = new(fileContent);
-        updatedFileContent.InsertRange(
-            index: indexToAdd + 1,
-            collection: codeLines.Select(line => new string(' ', propertySpaceCountInClass) + line)
-        );
+        // 3) İndent hesapla
+        int baseIndent =
+            (from k in Enumerable.Range(classOpenBrace + 1, Math.Max(0, insertAfter - classOpenBrace))
+             let line = file[k]
+             where line.Trim().Length > 0
+             select line.TakeWhile(char.IsWhiteSpace).Count())
+            .DefaultIfEmpty(file[classStart].TakeWhile(char.IsWhiteSpace).Count() + 4)
+            .Min();
 
-        await System.IO.File.WriteAllLinesAsync(filePath, contents: updatedFileContent.ToArray());
+        // 4) Tekrarlı eklemeyi önle
+        var trimmedTargets = codeLines.Select(l => l.Trim()).ToHashSet();
+        bool alreadyExists = file.Skip(classOpenBrace + 1).Take(classEnd - classOpenBrace - 1)
+                                 .Any(l => trimmedTargets.Contains(l.Trim()));
+        if (alreadyExists)
+            return;
+
+        // 5) Ekle
+        var prefixed = codeLines.Select(l => new string(' ', baseIndent) + l).ToList();
+        file.InsertRange(insertAfter + 1, prefixed);
+
+        await System.IO.File.WriteAllLinesAsync(filePath, file);
     }
 
 

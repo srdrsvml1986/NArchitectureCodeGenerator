@@ -18,9 +18,7 @@ public class GenerateBusinessRules
         bool isValidInheritance = fileContent.Any(line =>
             line.Contains(": Entity<") ||                     // Temel Entity kalıtımı
             line.Contains(": IEntity") ||                     // Arayüz implementasyonu
-            line.Contains("Core.Security.Entities.Log<") ||   // Log özel durumu
-            line.Contains("Core.Security.Entities.ExceptionLog<") ||   // Log özel durumu
-            line.Contains("Core.Security.Entities.DeviceToken<") ||   // Log özel durumu
+            Regex.IsMatch(line, @"Core\.Security\.Entities\.[A-Za-z0-9_]+<") ||   // Core.Security.Entities altındaki tüm generic entity’ler
             line.Contains($"class {entityName} : Entity")     // Temel Entity
         );
 
